@@ -10,7 +10,7 @@ const TodoCard = () => {
 					Выполнить
 				</Button>
 				<span>Название задачи</span>
-				<div className={styles.TodoCardMainButton}>
+				<div className={styles.TodoCardMainPriority}>
 					важность
 				</div>
 				<Button>

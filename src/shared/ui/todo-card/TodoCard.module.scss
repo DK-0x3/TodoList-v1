@@ -15,8 +15,15 @@
   font-weight: bold;
 }
 
-.TodoCardMainButton {
+.TodoCardMainPriority {
   background-color: transparent;
   border: solid 1px #FF0000;
   color: #FF0000;
+  border-radius: 10px;
+}
+
+.TodoCardMainButton {
+  background-color: transparent;
+  border: solid 1px var(--color5);
+  color: var(--color5);
 }
