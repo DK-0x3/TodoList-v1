@@ -1,0 +1,22 @@
+.TodoCard {
+  background-color: var(--background-color);
+  height: 120px;
+  border-radius: 20px;
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  padding: 10px;
+}
+
+.TodoCardMain {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 120px 1fr 120px 30px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.TodoCardMainButton {
+  background-color: transparent;
+  border: solid 1px #FF0000;
+  color: #FF0000;
+}

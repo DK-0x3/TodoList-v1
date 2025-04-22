@@ -1,0 +1,28 @@
+.Layout {
+  display: grid;
+  grid-template-columns: 1fr 5fr;
+  gap: 20px;
+  min-height: calc(100vh - 40px);
+}
+
+.LayoutHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 10px;
+  background-color: var(--color7);
+  border-radius: 25px;
+}
+
+.LayoutContent {
+  background-color: var(--color7);
+  border-radius: 25px;
+}
+
+.CreateTodo {
+  background-color: var(--color4) !important;
+}
+
+.ArchiveTodo {
+  background-color: var(--color3) !important;
+}

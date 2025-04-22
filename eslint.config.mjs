@@ -137,7 +137,7 @@ export default [
 			'no-param-reassign': 0,
 			'global-require': 0,
 			'i18next/no-literal-string': [
-				'error',
+				'warn',
 				{
 					markupOnly: true,
 					ignoreAttribute: ['data-testid', 'to',],

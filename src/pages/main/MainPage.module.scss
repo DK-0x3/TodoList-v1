@@ -1,0 +1,52 @@
+.MainPage {
+  display: grid;
+  height: 100%;
+  grid-template-rows: 70px 1fr;
+}
+
+.MainPageHeader {
+  display: grid;
+  grid-template-columns: 3fr 4fr 4fr;
+  gap: 20px;
+}
+
+.MainPageTitle {
+  font-size: 36px;
+  justify-self: left;
+  margin-left: 20px;
+  font-weight: bold;
+}
+
+.MainPageSearch {
+  font-size: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background-color: var(--background-color);
+  padding-left: 10px;
+  border-radius: 10px;
+
+  /* Сброс базовых стилей */
+  border: none;
+  outline: none;
+  box-shadow: none;
+
+  /* Чтобы убрать изменение рамки при фокусе и наведении */
+  &:focus,
+  &:hover,
+  &:active {
+    outline: none;
+    border: none;
+    box-shadow: none;
+  }
+}
+
+.MainPageSearchFilters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 10px;
+}
+
+.MainPageTodos {
+  margin: 20px;
+}
