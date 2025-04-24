@@ -39,6 +39,9 @@ const TodoCard = (props: ITodoCardProps) => {
 				<Button>
 					<img src={DeleteSvg} alt='deleteTodo'/>
 				</Button>
+				<Button>
+					<img src={DeleteSvg} alt='deleteTodo'/>
+				</Button>
 			</div>
 
 			<div className={styles.TodoCardMainDescription}>
