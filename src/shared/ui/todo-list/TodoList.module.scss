@@ -1,8 +1,14 @@
 .TodoList {
-  height: 100%; // или 100%, если родитель управляет размером
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding-right: 8px; // чтобы скролл не налезал
+}
+
+.TodoListGroup {
+  margin-top: 10px;
+}
+
+.TodoListGroupDate {
+  color: var(--color2);
+  justify-self: right;
+  margin-right: 20px;
 }

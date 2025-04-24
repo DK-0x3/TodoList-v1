@@ -1,5 +1,5 @@
-import Priority from "./Priority.ts";
-import {Status} from "./TodoStatus.ts";
+import Priority from './Priority';
+import { Status } from './TodoStatus';
 
 interface ITodo {
     id: string;

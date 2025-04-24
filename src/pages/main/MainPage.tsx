@@ -1,13 +1,12 @@
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import styles from './MainPage.module.scss';
 import Button from '../../shared/ui/button/Button';
-import TodoCard from '../../shared/ui/todo-card/TodoCard';
-import {useAppDispatch} from "../../store/types/useAppDispatch.ts";
-import ITodo from "../../entities/models/ITodo.ts";
-import Priority from "../../entities/models/Priority.ts";
-import {Status} from "../../entities/models/TodoStatus.ts";
-import {addTodos} from "../../store/services/todo-list/slice/todoListSlice.ts";
-import TodoList from "../../shared/ui/todo-list/TodoList.tsx";
+import { useAppDispatch } from '../../store/types/useAppDispatch';
+import ITodo from '../../entities/models/ITodo';
+import Priority from '../../entities/models/Priority';
+import { Status } from '../../entities/models/TodoStatus';
+import { addTodos } from '../../store/services/todo-list/slice/todoListSlice';
+import TodoList from '../../shared/ui/todo-list/TodoList';
 
 const MainPage = () => {
 	const { t } = useTranslation();

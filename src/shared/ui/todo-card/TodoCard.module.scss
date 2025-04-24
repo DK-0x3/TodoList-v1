@@ -6,6 +6,8 @@
   grid-template-rows: 1fr 1fr 1fr;
   padding: 10px;
   gap: 5px;
+  margin-top: inherit;
+  cursor: pointer;
 }
 
 .TodoCardMain {
@@ -18,9 +20,24 @@
 
 .TodoCardMainPriority {
   background-color: transparent;
-  border: solid 1px #FF0000;
-  color: #FF0000;
+  //border: solid 1px #FF0000;
+  //color: #FF0000;
   border-radius: 10px;
+
+  &.high {
+    border: solid 1px var(--priorityHigh);
+    color: var(--priorityHigh);
+  }
+
+  &.low {
+    border: solid 1px var(--priorityLow);
+    color: var(--priorityLow);
+  }
+
+  &.medium {
+    border: solid 1px var(--priorityMedium);
+    color: var(--priorityMedium);
+  }
 }
 
 .TodoCardMainButton {

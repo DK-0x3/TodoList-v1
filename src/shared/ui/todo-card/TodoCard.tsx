@@ -2,7 +2,9 @@ import styles from './TodoCard.module.scss';
 import Button from '../button/Button';
 import DeleteSvg from '../../../shared/assets/svg/delete.svg';
 import TimeSvg from '../../assets/svg/time.svg';
-import ITodo from "../../../entities/models/ITodo.ts";
+import ITodo from '../../../entities/models/ITodo';
+import { DateUtils } from '../../utils/Date';
+import Priority from '../../../entities/models/Priority';
 
 export interface ITodoCardProps {
 	todo: ITodo;
@@ -13,6 +15,12 @@ const TodoCard = (props: ITodoCardProps) => {
 		todo,
 	} = props;
 
+	const priorityToText: Record<Priority, string> = {
+		[Priority.LOW]: 'Низкий',
+		[Priority.MEDIUM]: 'Средний',
+		[Priority.HIGH]: 'Высокий',
+	};
+
 	return (
 		<div className={styles.TodoCard}>
 			<div className={styles.TodoCardMain}>
@@ -22,8 +30,11 @@ const TodoCard = (props: ITodoCardProps) => {
 				<span>
 					{todo.title}
 				</span>
-				<div className={styles.TodoCardMainPriority}>
-					{todo.priority}
+				<div className={`${styles.TodoCardMainPriority} 
+  									${todo.priority === Priority.HIGH ? styles.high : ''}
+  									${todo.priority === Priority.MEDIUM ? styles.medium : ''}
+  									${todo.priority === Priority.LOW ? styles.low : ''}`}>
+					{priorityToText[todo.priority]}
 				</div>
 				<Button>
 					<img src={DeleteSvg} alt='deleteTodo'/>
@@ -37,7 +48,7 @@ const TodoCard = (props: ITodoCardProps) => {
 			<div className={styles.TodoCardMainTime}>
 				<img src={TimeSvg}/>
 				<span>
-					{todo.dateCompleted}
+					{DateUtils.formatDateToRussian(todo.dateCompleted)}
 				</span>
 			</div>
 		</div>
