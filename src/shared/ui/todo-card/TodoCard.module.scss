@@ -5,6 +5,7 @@
   display: grid;
   grid-template-rows: 1fr 1fr 1fr;
   padding: 10px;
+  gap: 5px;
 }
 
 .TodoCardMain {
@@ -26,4 +27,22 @@
   background-color: transparent;
   border: solid 1px var(--color5);
   color: var(--color5);
+  transition: 0.2s;
+
+  &:hover {
+    border: solid 1px var(--greenLight);
+    color: var(--greenLight);
+  }
+}
+
+.TodoCardMainDescription {
+  justify-self: left;
+  color: var(--color2);
+}
+
+.TodoCardMainTime {
+  display: flex;
+  gap: 10px;
+  justify-self: left;
+  align-items: center;
 }
