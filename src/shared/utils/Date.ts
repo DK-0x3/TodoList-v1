@@ -30,9 +30,14 @@ class Date {
 		return groups;
 	};
 
-	public formatDateToRussian = (dateString: string): string => {
+	public formatUTCToRussian = (dateString: string): string => {
 		const date = parseISO(dateString); // превращаем строку в объект Date
 		return format(date, 'd MMMM yyyy', { locale: ru }); // форматируем
+	};
+
+	public formatUTCToInputDate = (utcString: string): string => {
+		const date = parseISO(utcString); // преобразуем строку в объект Date
+		return format(date, 'yyyy-MM-dd'); // форматируем под input[type="date"]
 	};
 }
 

@@ -1,0 +1,107 @@
+.EditTodo {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.EditTodoTitle {
+  font-size: 24px;
+  font-weight: bold;
+  width: 100%;
+  min-width: 300px;
+  min-height: 100px;
+  border: none;
+  border-radius: 4px;
+  outline: none;
+  background-color: var(--background-color);
+  padding: 10px 5px 10px 5px;
+  resize: vertical;
+}
+
+.EditTodoDescription {
+  font-size: 18px;
+  width: 100%;
+  min-width: 300px;
+  min-height: 100px;
+  border-radius: 4px;
+  outline: none;
+  background-color: var(--background-color);
+  padding: 10px 5px 10px 5px;
+  border: none;
+  margin-top: 20px;
+  resize: vertical;
+}
+
+.EditTodoProperties {
+  height: 120px;
+  background: var(--background-color);
+  width: 100%;
+  margin-top: auto;
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: 2fr 4fr 1fr;
+  align-items: center;
+  padding: 10px;
+
+  .Date {
+    display: grid;
+    grid-template-columns: 30px 1fr;
+    gap: 5px;
+
+    .Title {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    input {
+      background-color: var(--background-color);
+      border: solid 2px var(--color2);
+      border-radius: 10px;
+      height: fit-content;
+      padding: 10px;
+      align-self: center;
+
+      &:focus {
+        outline: none;
+        box-shadow: none;
+      }
+    }
+  }
+
+  .ActionButtons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+
+    .CompletedButton {
+      background-color: var(--color4);
+
+      &:hover {
+        background-color: var(--color3);
+      }
+    }
+
+    .SaveButton {
+      background-color: var(--color4);
+
+      &:hover {
+        background-color: var(--color3);
+      }
+    }
+
+    .DeleteButton {
+      background-color: var(--color4);
+
+      &:hover {
+        background-color: var(--color3);
+      }
+    }
+  }
+
+  .Priorities {
+
+  }
+}
