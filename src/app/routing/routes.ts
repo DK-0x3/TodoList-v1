@@ -1,7 +1,8 @@
 const ROUTES = {
 	HOME: '/',
+	TODOS: '/:sort/:search?',
 	NOT_FOUND: '*',
-	EDIT: 'edit/:id',
+	EDIT: '/:sort/:search?/edit/:id',
 };
 
 export default ROUTES;

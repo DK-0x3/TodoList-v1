@@ -6,7 +6,7 @@ import TimeSvg from '../../assets/svg/time.svg';
 import ITodo from '../../../entities/models/ITodo';
 import { DateUtils } from '../../utils/Date';
 import Priority from '../../../entities/models/Priority';
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 export interface ITodoCardProps {
 	todo: ITodo;
@@ -26,7 +26,7 @@ const TodoCard = (props: ITodoCardProps) => {
 
 	const handleEditTodo = () => {
 		navigate(`edit/${todo.id}`);
-	}
+	};
 
 	return (
 		<div className={styles.TodoCard}>

@@ -1,14 +1,14 @@
-import {Outlet, useNavigate} from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import styles from './Loyout.module.scss';
 import Button from '../../shared/ui/button/Button';
-import ROUTES from "../../app/routing/routes.ts";
+import ROUTES from '../../app/routing/routes';
 
 const Layout = () => {
 	const navigate = useNavigate();
 
 	const handleGetTodos = () => {
 		navigate(ROUTES.HOME);
-	}
+	};
 
 	return (
 		<div className={styles.Layout}>

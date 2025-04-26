@@ -45,6 +45,29 @@
   grid-template-columns: 1fr 1fr;
   gap: 20px;
   padding: 10px;
+
+  .ButtonSorted {
+    cursor: pointer;
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 0.5em 1em;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+    background-color: var(--background-color);
+    color: #ffffff;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    &.loading {
+      pointer-events: none;
+    }
+  }
 }
 
 .MainPageTodos {
