@@ -7,16 +7,28 @@ import ITodo from '../../../entities/models/ITodo';
 import { DateUtils } from '../../utils/Date';
 import Priority from '../../../entities/models/Priority';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../../store/types/useAppDispatch';
+import { Status } from '../../../entities/models/TodoStatus';
+import { updateTodoAsync } from '../../../store/services/todo-list/slice/updateTodoAsync';
+
+export enum TodoCardStatus {
+	DEFAULT = 'DEFAULT',
+	DELETED = 'DELETED',
+	COMPLETED = 'COMPLETED',
+}
 
 export interface ITodoCardProps {
 	todo: ITodo;
+	status: TodoCardStatus,
 }
 
 const TodoCard = (props: ITodoCardProps) => {
 	const {
 		todo,
+		status,
 	} = props;
 	const navigate = useNavigate();
+	const dispatch = useAppDispatch();
 
 	const priorityToText: Record<Priority, string> = {
 		[Priority.LOW]: 'Низкий',
@@ -27,13 +39,44 @@ const TodoCard = (props: ITodoCardProps) => {
 	const handleEditTodo = () => {
 		navigate(`edit/${todo.id}`);
 	};
+	
+	const handleCompleteTodo = () => {
+		const newTodo: ITodo = {
+			...todo,
+			status: Status.COMPLETED,
+		};
+		dispatch(updateTodoAsync(newTodo));
+	};
+
+	const handleDeleteTodo = () => {
+		const newTodo: ITodo = {
+			...todo,
+			isDeleted: true,
+		};
+		dispatch(updateTodoAsync(newTodo));
+	};
 
 	return (
 		<div className={styles.TodoCard}>
 			<div className={styles.TodoCardMain}>
-				<Button size='small' className={styles.TodoCardMainButton}>
-					Выполнить
-				</Button>
+				{status === TodoCardStatus.DEFAULT && (
+					<Button onClick={handleCompleteTodo} size="small" className={styles.TodoCardMainButton}>
+						Выполнить
+					</Button>
+				)}
+
+				{status === TodoCardStatus.COMPLETED && (
+					<div className={styles.TodoCardStatusCompleted}>
+						Выполнено!
+					</div>
+				)}
+
+				{status === TodoCardStatus.DELETED && (
+					<div className={styles.TodoCardStatusDeleted}>
+						Удалено
+					</div>
+				)}
+
 				<span>
 					{todo.title}
 				</span>
@@ -43,12 +86,16 @@ const TodoCard = (props: ITodoCardProps) => {
   									${todo.priority === Priority.LOW ? styles.low : ''}`}>
 					{priorityToText[todo.priority]}
 				</div>
-				<Button>
-					<img src={EditSvg} onClick={handleEditTodo} alt='editTodo'/>
-				</Button>
-				<Button>
-					<img src={DeleteSvg} alt='deleteTodo'/>
-				</Button>
+				{status === TodoCardStatus.DEFAULT && (
+					<Button>
+						<img src={EditSvg} onClick={handleEditTodo} alt='editTodo'/>
+					</Button>
+				)}
+				{status === TodoCardStatus.DEFAULT && (
+					<Button onClick={handleDeleteTodo}>
+						<img src={DeleteSvg} alt='deleteTodo'/>
+					</Button>
+				)}
 			</div>
 
 			<div className={styles.TodoCardMainDescription}>

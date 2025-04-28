@@ -1,12 +1,12 @@
-import styles from './MainPage.module.scss';
-import TodoList from '../../shared/ui/todo-list/TodoList';
+import styles from './ArchivePage.module.scss';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { getTodos } from '../../store/services/todo-list/selectors/getTodoById';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useState } from 'react';
 import { Status } from '../../entities/models/TodoStatus';
+import { useState } from 'react';
+import TodoList from '../../shared/ui/todo-list/TodoList';
 
-const MainPage = () => {
+const ArchivePage = () => {
 	let { sort, search } = useParams<string>();
 	if (!sort) {
 		sort = 'date';
@@ -16,7 +16,7 @@ const MainPage = () => {
 	}
 
 	let todos = useSelector(getTodos);
-	todos = todos.filter(todo => todo.status !== Status.COMPLETED && todo.isDeleted !== true);
+	todos = todos.filter(todo => todo.status === Status.COMPLETED || todo.isDeleted === true);
 
 	const [searchTerm, setSearchTerm] = useState('');
 	const navigate = useNavigate();
@@ -26,13 +26,13 @@ const MainPage = () => {
 		const query = e.target.value;
 		setSearchTerm(query);
 
-		navigate(`/${sort}/${query ? query : ''}`);
+		navigate(`archive/${sort}/${query ? query : ''}`);
 	};
-    
+
 	return (
 		<div className={styles.MainPage}>
 			<header className={styles.MainPageHeader}>
-				<span className={styles.MainPageTitle}>Мои задачи</span>
+				<span className={styles.MainPageTitle}>Архив задач</span>
 				<input
 					className={styles.MainPageSearch}
 					placeholder='Поиск'
@@ -40,8 +40,8 @@ const MainPage = () => {
 					onChange={handleSearchChange}
 				/>
 				<div className={styles.MainPageSearchFilters}>
-					<Link className={styles.ButtonSorted} to='/date'>По дате</Link>
-					<Link className={styles.ButtonSorted} to='/priority'>По важности</Link>
+					<Link className={styles.ButtonSorted} to='/archive/date'>По дате</Link>
+					<Link className={styles.ButtonSorted} to='/archive/priority'>По важности</Link>
 				</div>
 			</header>
 			<div className={styles.MainPageTodos}>
@@ -51,4 +51,4 @@ const MainPage = () => {
 	);
 };
 
-export default MainPage;
+export default ArchivePage;

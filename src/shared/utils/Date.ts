@@ -13,8 +13,6 @@ class DateUtil {
 		};
 
 		todos.forEach((todo) => {
-			if (todo.isDeleted) return;
-
 			const date = parseISO(todo.dateCompleted);
 			let group = 'Позже';
 

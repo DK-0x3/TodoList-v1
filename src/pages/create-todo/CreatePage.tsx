@@ -1,58 +1,77 @@
-import styles from './EditPage.module.scss';
-import { getTodos } from '../../store/services/todo-list/selectors/getTodoById';
-import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import styles from './CreatePage.module.scss';
+import { useAppDispatch } from '../../store/types/useAppDispatch';
+import { useNavigate } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { DateUtils } from '../../shared/utils/Date';
 import ROUTES from '../../app/routing/routes';
+import ITodo from '../../entities/models/ITodo';
+import toast from 'react-hot-toast';
+import Priority from '../../entities/models/Priority';
+import DropDownMenu, { IDropDownMenuValue } from '../../shared/ui/drop-down-menu/DropDownMenu';
+import { Status } from '../../entities/models/TodoStatus';
 import { InputApp } from '../../shared/ui/input/InputApp';
 import TimeSvg from '../../shared/assets/svg/time.svg';
 import Button from '../../shared/ui/button/Button';
-import DropDownMenu, { IDropDownMenuValue } from '../../shared/ui/drop-down-menu/DropDownMenu';
-import Priority from '../../entities/models/Priority';
-import { DateUtils } from '../../shared/utils/Date';
-import { useCallback, useEffect, useState } from 'react';
-import { useAppDispatch } from '../../store/types/useAppDispatch';
-import ITodo from '../../entities/models/ITodo';
-import { Status } from '../../entities/models/TodoStatus';
-import toast from 'react-hot-toast';
-import { updateTodoAsync } from '../../store/services/todo-list/slice/updateTodoAsync';
+import { addTodoAsync } from '../../store/services/todo-list/slice/addTodoAsync';
 
-export const EditPage = () => {
+const CreatePage = () => {
 	const dispatch = useAppDispatch();
-	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 
-	const todo = useSelector(getTodos).find(todo => todo.id === id);
+	const todo: ITodo = {
+		id: '',
+		title: '',
+		description: '',
+		priority: Priority.LOW,
+		status: Status.NOT_COMPLETED,
+		dateCompleted: new Date().toISOString(),
+		isDeleted: false,
+	};
+	const [currentTodo, setCurrentTodo] = useState<ITodo>(todo);
 
 	// Все хуки вызываем без условий
-	const [dateRussian, setDateRussian] = useState<string>('');
-
-	// Обновляем дату, когда todo появится
-	useEffect(() => {
-		if (todo?.dateCompleted) {
-			setDateRussian(DateUtils.formatUTCToRussian(todo.dateCompleted));
-		}
-	}, [todo]);
-
-	// Навигация на 404 при отсутствии todo
-	useEffect(() => {
-		if (todo === undefined) return; // ждём пока появится todo
-		if (!todo) navigate(ROUTES.NOT_FOUND);
-	}, [todo, navigate]);
-
-	const titleInitial = todo?.title ?? '';
-	const descriptionInitial = todo?.description ?? '';
+	const [date, setDate] = useState<string>(currentTodo.dateCompleted);
+    
+	const titleInitial = currentTodo?.title ?? '';
+	const descriptionInitial = currentTodo?.description ?? '';
 	const [title, setTitle] = useState(titleInitial);
 	const [description, setDescription] = useState(descriptionInitial);
 
 	// --- сначала handleSave
 	const handleSave = () => {
-		if (!todo) return;
+		if (title.trim() === '') {
+			toast('Ошибка, заполни заголовок!', {
+				icon: '✖',
+				duration: 1000,
+				style: {
+					borderRadius: '10px',
+					background: 'var(--background-color)',
+					color: '#ff0000',
+				},
+			});
+			return;
+		}
+		if (description.trim() === '') {
+			toast('Ошибка, заполни заголовок!', {
+				icon: '✔',
+				duration: 1000,
+				style: {
+					borderRadius: '10px',
+					background: 'var(--background-color)',
+					color: '#ff0000',
+				},
+			});
+			return;
+		}
+        
+		if (!currentTodo) return;
 		const newTodo: ITodo = {
-			...todo,
+			...currentTodo,
+			dateCompleted: date,
 			title,
 			description,
 		};
-		dispatch(updateTodoAsync(newTodo));
+		dispatch(addTodoAsync(newTodo));
 		toast('Сохранено!', {
 			icon: '✔',
 			duration: 1000,
@@ -62,6 +81,7 @@ export const EditPage = () => {
 				color: '#fff',
 			},
 		});
+		navigate(ROUTES.HOME);
 	};
 
 	// --- потом handleSaveShortcut
@@ -70,7 +90,7 @@ export const EditPage = () => {
 			event.preventDefault();
 			handleSave();
 		}
-	}, [title, description, todo]);
+	}, [title, description, currentTodo]);
 
 	useEffect(() => {
 		window.addEventListener('keydown', handleSaveShortcut);
@@ -80,7 +100,7 @@ export const EditPage = () => {
 		};
 	}, [handleSaveShortcut]);
 
-	if (!todo) return <div>Загрузка...</div>;
+	if (!currentTodo) return <div>Загрузка...</div>;
 
 	const priority: Map<Priority, IDropDownMenuValue> = new Map();
 	priority.set(Priority.LOW, {
@@ -96,7 +116,7 @@ export const EditPage = () => {
 		color: 'var(--priorityHigh)',
 	});
 
-	const lowPriority = priority.get(todo.priority);
+	const lowPriority = priority.get(currentTodo.priority);
 	const initialValue = lowPriority ? lowPriority : {
 		value: 'ошибка',
 		color: '#FF0000',
@@ -105,64 +125,50 @@ export const EditPage = () => {
 	const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const newDate = e.target.value; // в формате 'YYYY-MM-DD'
 		if (!isNaN(Date.parse(newDate))) {
-			setDateRussian(DateUtils.formatUTCToRussian(newDate));
-			const newTodo: ITodo = {
-				...todo,
-				dateCompleted: DateUtils.formatToUTC(newDate),
-			};
-			dispatch(updateTodoAsync(newTodo));
+			setDate(DateUtils.formatToUTC(newDate));
 		} else {
 			console.warn('Невалидная дата');
 		}
 	};
-	
+
 	const handleSetPriority = (priority: Priority) => {
-		const newTodo: ITodo = {
-			...todo,
+		setCurrentTodo(prevTodo => ({
+			...prevTodo,
 			priority: priority,
-		};
-		dispatch(updateTodoAsync(newTodo));
-	};
-	
-	const handleDelete = () => {
-		const newTodo: ITodo = {
-			...todo,
-			isDeleted: true,
-		};
-		dispatch(updateTodoAsync(newTodo));
-		navigate(ROUTES.HOME);
+		}));
 	};
 
 	const handleCompleted = () => {
-		const newTodo: ITodo = {
-			...todo,
+		setCurrentTodo(prevTodo => ({
+			...prevTodo,
 			status: Status.COMPLETED,
-		};
-		dispatch(updateTodoAsync(newTodo));
+		}));
 		navigate(ROUTES.HOME);
 	};
 
 	return (
-		<div className={styles.EditTodo}>
+		<div className={styles.CreateTodo}>
 			<InputApp
-				className={styles.EditTodoTitle}
-				value={todo.title}
+				className={styles.CreateTodoTitle}
+				value={currentTodo.title}
 				onChange={(text) => setTitle(text)}
 			/>
 			<InputApp
-				className={styles.EditTodoDescription}
-				value={todo.description}
+				className={styles.CreateTodoDescription}
+				value={currentTodo.description}
 				onChange={(text) => setDescription(text)}
 			/>
 
-			<div className={styles.EditTodoProperties}>
+			<div className={styles.CreateTodoProperties}>
 				<div className={styles.Date}>
 					<img style={{ justifySelf: 'right', alignSelf: 'center' }} src={TimeSvg}/>
 					<div className={styles.Title}>
-						<span style={{ fontSize: '20px', fontWeight: 'bold' }}>{dateRussian}</span>
+						<span style={{ fontSize: '20px', fontWeight: 'bold' }}>
+							{DateUtils.formatUTCToRussian(date)}
+						</span>
 						<input
 							type='date'
-							defaultValue={DateUtils.formatUTCToInputDate(todo.dateCompleted)}
+							defaultValue={DateUtils.formatUTCToInputDate(currentTodo.dateCompleted)}
 							onChange={handleDateChange}
 						/>
 					</div>
@@ -175,9 +181,6 @@ export const EditPage = () => {
 					<Button onClick={handleSave} size='medium' className={styles.SaveButton}>
 						Сохранить
 					</Button>
-					<Button onClick={handleDelete} size='medium' className={styles.DeleteButton}>
-						Удалить
-					</Button>
 				</div>
 
 				<div className={styles.Priorities}>
@@ -187,3 +190,5 @@ export const EditPage = () => {
 		</div>
 	);
 };
+
+export default CreatePage;

@@ -51,6 +51,14 @@
   }
 }
 
+.TodoCardStatusDeleted {
+  color: #FF0000;
+}
+
+.TodoCardStatusCompleted {
+  color: var(--priorityLow);
+}
+
 .TodoCardMainDescription {
   justify-self: left;
   color: var(--color2);
