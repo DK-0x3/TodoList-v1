@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../../store/types/useAppDispatch';
 import { Status } from '../../../entities/models/TodoStatus';
 import { updateTodoAsync } from '../../../store/services/todo-list/slice/updateTodoAsync';
+import { PriorityUtils } from '../../utils/Priority';
 
 export enum TodoCardStatus {
 	DEFAULT = 'DEFAULT',
@@ -29,12 +30,6 @@ const TodoCard = (props: ITodoCardProps) => {
 	} = props;
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
-
-	const priorityToText: Record<Priority, string> = {
-		[Priority.LOW]: 'Низкий',
-		[Priority.MEDIUM]: 'Средний',
-		[Priority.HIGH]: 'Высокий',
-	};
 
 	const handleEditTodo = () => {
 		navigate(`edit/${todo.id}`);
@@ -59,55 +54,68 @@ const TodoCard = (props: ITodoCardProps) => {
 	return (
 		<div className={styles.TodoCard}>
 			<div className={styles.TodoCardMain}>
-				{status === TodoCardStatus.DEFAULT && (
-					<Button onClick={handleCompleteTodo} size="small" className={styles.TodoCardMainButton}>
-						Выполнить
-					</Button>
-				)}
-
-				{status === TodoCardStatus.COMPLETED && (
-					<div className={styles.TodoCardStatusCompleted}>
-						Выполнено!
+				<div>
+					<div
+						className={styles.TodoCardMainButton}
+						style={{ backgroundColor: PriorityUtils.priorityToColor(todo.priority) }}
+					>
 					</div>
-				)}
-
-				{status === TodoCardStatus.DELETED && (
-					<div className={styles.TodoCardStatusDeleted}>
-						Удалено
-					</div>
-				)}
+				</div>
 
 				<span>
 					{todo.title}
 				</span>
-				<div className={`${styles.TodoCardMainPriority} 
-  									${todo.priority === Priority.HIGH ? styles.high : ''}
-  									${todo.priority === Priority.MEDIUM ? styles.medium : ''}
-  									${todo.priority === Priority.LOW ? styles.low : ''}`}>
-					{priorityToText[todo.priority]}
-				</div>
-				{status === TodoCardStatus.DEFAULT && (
-					<Button>
-						<img src={EditSvg} onClick={handleEditTodo} alt='editTodo'/>
-					</Button>
-				)}
-				{status === TodoCardStatus.DEFAULT && (
-					<Button onClick={handleDeleteTodo}>
-						<img src={DeleteSvg} alt='deleteTodo'/>
-					</Button>
-				)}
 			</div>
+			{/*<div className={styles.TodoCardMain}>*/}
+			{/*	{status === TodoCardStatus.DEFAULT && (*/}
+			{/*		<Button onClick={handleCompleteTodo} size="small" className={styles.TodoCardMainButton}>*/}
+			{/*			Выполнить*/}
+			{/*		</Button>*/}
+			{/*	)}*/}
 
-			<div className={styles.TodoCardMainDescription}>
-				{todo.description}
-			</div>
+			{/*	{status === TodoCardStatus.COMPLETED && (*/}
+			{/*		<div className={styles.TodoCardStatusCompleted}>*/}
+			{/*			Выполнено!*/}
+			{/*		</div>*/}
+			{/*	)}*/}
 
-			<div className={styles.TodoCardMainTime}>
-				<img src={TimeSvg}/>
-				<span>
-					{DateUtils.formatUTCToRussian(todo.dateCompleted)}
-				</span>
-			</div>
+			{/*	{status === TodoCardStatus.DELETED && (*/}
+			{/*		<div className={styles.TodoCardStatusDeleted}>*/}
+			{/*			Удалено*/}
+			{/*		</div>*/}
+			{/*	)}*/}
+
+			{/*	<span>*/}
+			{/*		{todo.title}*/}
+			{/*	</span>*/}
+			{/*	<div className={`${styles.TodoCardMainPriority} */}
+			{/*						${todo.priority === Priority.HIGH ? styles.high : ''}*/}
+			{/*						${todo.priority === Priority.MEDIUM ? styles.medium : ''}*/}
+			{/*						${todo.priority === Priority.LOW ? styles.low : ''}`}>*/}
+			{/*		{priorityToText[todo.priority]}*/}
+			{/*	</div>*/}
+			{/*	{status === TodoCardStatus.DEFAULT && (*/}
+			{/*		<Button>*/}
+			{/*			<img src={EditSvg} onClick={handleEditTodo} alt='editTodo'/>*/}
+			{/*		</Button>*/}
+			{/*	)}*/}
+			{/*	{status === TodoCardStatus.DEFAULT && (*/}
+			{/*		<Button onClick={handleDeleteTodo}>*/}
+			{/*			<img src={DeleteSvg} alt='deleteTodo'/>*/}
+			{/*		</Button>*/}
+			{/*	)}*/}
+			{/*</div>*/}
+
+			{/*<div className={styles.TodoCardMainDescription}>*/}
+			{/*	{todo.description}*/}
+			{/*</div>*/}
+
+			{/*<div className={styles.TodoCardMainTime}>*/}
+			{/*	<img src={TimeSvg}/>*/}
+			{/*	<span>*/}
+			{/*		{DateUtils.formatUTCToRussian(todo.dateCompleted)}*/}
+			{/*	</span>*/}
+			{/*</div>*/}
 		</div>
 	);
 };
