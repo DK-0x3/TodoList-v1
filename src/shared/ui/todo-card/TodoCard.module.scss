@@ -15,6 +15,10 @@
   grid-template-columns: 30px 1fr 40px;
   font-size: 20px;
   font-weight: bold;
+
+  span {
+    justify-self: center;
+  }
 }
 
 .TodoCardMainPriority {
@@ -45,8 +49,8 @@
   border-radius: 20%;
 }
 
-.TodoCardStatusDeleted {
-  color: #FF0000;
+.TodoCardDelete {
+  cursor: pointer;
 }
 
 .TodoCardStatusCompleted {
@@ -61,6 +65,9 @@
 .TodoCardMainTime {
   display: flex;
   gap: 10px;
-  justify-self: left;
   align-items: center;
+  background-color: #292935;
+  padding: 3px 5px 3px 5px;
+  border-radius: 10px;
+  justify-self: right;
 }
