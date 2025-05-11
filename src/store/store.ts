@@ -1,10 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { reducers } from './reducers';
+import { TodoReactAPI } from '../app/api/todoReactAPI';
 
 const store = configureStore({
 	reducer: reducers,
 	middleware: (getDefaultMiddleware) =>
-		getDefaultMiddleware().concat(),
+		getDefaultMiddleware().concat(TodoReactAPI.middleware),
 });
 
 // Экспорт типов для глобального состояния и dispatch

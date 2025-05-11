@@ -4,7 +4,7 @@ import cors from 'cors';
 import { v4 as uuidv4 } from 'uuid';
 
 const app = express();
-const PORT = 4000;
+const PORT = 1941;
 
 // Middlewares
 app.use(cors());
@@ -17,11 +17,6 @@ const Priority = {
 	HIGH: 'high',
 };
 
-const Status = {
-	COMPLETED: 'completed',
-	NOT_COMPLETED: 'not_completed',
-};
-
 // Стартовые Todo
 let todos = [
 	{
@@ -29,7 +24,7 @@ let todos = [
 		title: 'Купить продукты',
 		description: 'Молоко, хлеб, сыр',
 		priority: Priority.MEDIUM,
-		status: Status.NOT_COMPLETED,
+		done: false,
 		dateCompleted: '2025-04-29T09:32:00.000Z',
 		isDeleted: false,
 	},
@@ -38,7 +33,7 @@ let todos = [
 		title: 'Сделать домашку',
 		description: 'Математика и физика',
 		priority: Priority.HIGH,
-		status: Status.NOT_COMPLETED,
+		done: false,
 		dateCompleted: '2025-04-28T09:32:00.000Z',
 		isDeleted: false,
 	},
@@ -47,7 +42,7 @@ let todos = [
 		title: 'Первая задача',
 		description: 'Описание первой задачи',
 		priority: Priority.LOW,
-		status: Status.NOT_COMPLETED,
+		done: false,
 		dateCompleted: '2025-04-24T09:32:00.000Z',
 		isDeleted: false,
 	},
@@ -56,7 +51,7 @@ let todos = [
 		title: 'Вторая задача',
 		description: 'Описание второй задачи',
 		priority: Priority.HIGH,
-		status: Status.NOT_COMPLETED,
+		done: false,
 		dateCompleted: '2025-04-25T10:15:00.000Z',
 		isDeleted: false,
 	},
@@ -65,7 +60,7 @@ let todos = [
 		title: 'Третья задача',
 		description: 'Описание третьей задачи',
 		priority: Priority.HIGH,
-		status: Status.NOT_COMPLETED,
+		done: false,
 		dateCompleted: '2025-04-23T14:20:00.000Z',
 		isDeleted: false,
 	},
@@ -74,7 +69,7 @@ let todos = [
 		title: 'Четвёртая задача',
 		description: 'Описание четвёртой задачи',
 		priority: Priority.LOW,
-		status: Status.NOT_COMPLETED,
+		done: false,
 		dateCompleted: '2025-04-26T11:00:00.000Z',
 		isDeleted: false,
 	},
@@ -83,7 +78,7 @@ let todos = [
 		title: 'Пятая задача',
 		description: 'Описание пятой задачи',
 		priority: Priority.MEDIUM,
-		status: Status.NOT_COMPLETED,
+		done: false,
 		dateCompleted: '2025-04-27T09:00:00.000Z',
 		isDeleted: false,
 	},
@@ -92,7 +87,7 @@ let todos = [
 		title: 'Шестая задача',
 		description: 'Описание шестой задачи',
 		priority: Priority.HIGH,
-		status: Status.NOT_COMPLETED,
+		done: false,
 		dateCompleted: '2025-04-28T08:30:00.000Z',
 		isDeleted: false,
 	},
@@ -101,7 +96,7 @@ let todos = [
 		title: 'Седьмая задача',
 		description: 'Описание седьмой задачи',
 		priority: Priority.LOW,
-		status: Status.COMPLETED,
+		done: false,
 		dateCompleted: '2025-04-22T07:45:00.000Z',
 		isDeleted: false,
 	},
@@ -110,7 +105,7 @@ let todos = [
 		title: 'Восьмая задача',
 		description: 'Описание восьмой задачи',
 		priority: Priority.MEDIUM,
-		status: Status.NOT_COMPLETED,
+		done: false,
 		dateCompleted: '2025-04-21T15:00:00.000Z',
 		isDeleted: false,
 	},
@@ -119,7 +114,7 @@ let todos = [
 		title: 'Девятая задача',
 		description: 'Описание девятой задачи',
 		priority: Priority.HIGH,
-		status: Status.NOT_COMPLETED,
+		done: false,
 		dateCompleted: '2025-04-20T13:15:00.000Z',
 		isDeleted: false,
 	},
@@ -128,7 +123,7 @@ let todos = [
 		title: 'Десятая задача',
 		description: 'Описание десятой задачи',
 		priority: Priority.LOW,
-		status: Status.NOT_COMPLETED,
+		done: false,
 		dateCompleted: '2025-04-19T17:20:00.000Z',
 		isDeleted: true,
 	},
@@ -139,8 +134,8 @@ app.get('/api/todos', (req, res) => {
 	res.json(todos);
 });
 
-app.post('/api/todos', (req, res) => {
-	const { title, description, priority, status, dateCompleted, isDeleted } = req.body;
+app.post('/api/todo', (req, res) => {
+	const { title, description, priority, done, dateCompleted, isDeleted } = req.body;
 
 	if (!title || !description || !priority) {
 		return res.status(400).json({ error: 'Заполните все поля!' });
@@ -151,7 +146,7 @@ app.post('/api/todos', (req, res) => {
 		title,
 		description,
 		priority,
-		status,
+		done,
 		dateCompleted,
 		isDeleted,
 	};
@@ -161,9 +156,9 @@ app.post('/api/todos', (req, res) => {
 });
 
 // Роут для изменения Todo
-app.put('/api/todos/:id', (req, res) => {
+app.put('/api/todo/:id', (req, res) => {
 	const { id } = req.params;
-	const { title, description, priority, status, isDeleted } = req.body;
+	const { title, description, priority, done, isDeleted, dateCompleted } = req.body;
 
 	// Находим todo по id
 	const todoIndex = todos.findIndex(todo => todo.id === id);
@@ -176,7 +171,8 @@ app.put('/api/todos/:id', (req, res) => {
 	if (title) todos[todoIndex].title = title;
 	if (description) todos[todoIndex].description = description;
 	if (priority) todos[todoIndex].priority = priority;
-	if (status) todos[todoIndex].status = status;
+	if (done) todos[todoIndex].done = done;
+	if (dateCompleted) todos[todoIndex].dateCompleted = dateCompleted;
 	if (isDeleted) todos[todoIndex].isDeleted = isDeleted;
 
 	res.json(todos[todoIndex]);

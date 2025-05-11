@@ -1,10 +1,9 @@
 import styles from './MainPage.module.scss';
 import TodoList from '../../shared/ui/todo-list/TodoList';
 import { useSelector } from 'react-redux';
-import { getTodos } from '../../store/services/todo-list/selectors/getTodoById';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useState } from 'react';
-import { Status } from '../../entities/models/TodoStatus';
+import { getActiveTodos } from '../../store/services/todo-list/selectors/getActiveTodos';
 
 const MainPage = () => {
 	let { sort, search } = useParams<string>();
@@ -15,8 +14,7 @@ const MainPage = () => {
 		search = '';
 	}
 
-	let todos = useSelector(getTodos);
-	todos = todos.filter(todo => todo.status !== Status.COMPLETED && todo.isDeleted !== true);
+	let todos = useSelector(getActiveTodos);
 
 	const [searchTerm, setSearchTerm] = useState('');
 	const navigate = useNavigate();

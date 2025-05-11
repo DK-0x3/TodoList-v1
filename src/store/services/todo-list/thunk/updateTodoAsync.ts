@@ -6,7 +6,7 @@ export const updateTodoAsync = createAppAsyncThunk(
 	'todoList/updateTodoAsync',
 	async (data: Partial<ITodo>, { rejectWithValue }) => {
 		try {
-			return TodoAPI.updateTodo(data); // Возвращаем обновлённый todo
+			return TodoAPI.updateTodo(data);
 		} catch (error) {
 			return rejectWithValue('Failed to update todo');
 		}

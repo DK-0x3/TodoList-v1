@@ -10,26 +10,29 @@ import { useEffect } from 'react';
 import { useAppDispatch } from '../store/types/useAppDispatch';
 import { initSession } from '../store/services/session/thunk/initSession';
 import { addTodos } from '../store/services/todo-list/slice/todoListSlice';
-import { TodoAPI } from './api/todoApi';
+import { useFetchTodosQuery } from './api/todoReactAPI';
 
 const App = () => {
 	const queryClient = new QueryClient();
 	const dispatch = useAppDispatch();
+
+	const { data, isSuccess } = useFetchTodosQuery();
 
 	useEffect(() => {
 		dispatch(initSession());
 
 		const getTodos = async () => {
 			try {
-				const fetchedTodos = await TodoAPI.fetchTodos();
-				dispatch(addTodos(fetchedTodos));
+				if (isSuccess) {
+					dispatch(addTodos(data));
+				}
 			} catch (err) {
 				console.log(err);
 			}
 		};
 
 		getTodos();
-	}, [dispatch]);
+	}, [dispatch, data, isSuccess]);
 
 	return (
 		<QueryClientProvider client={queryClient}>

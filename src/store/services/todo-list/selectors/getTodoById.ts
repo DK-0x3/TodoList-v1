@@ -1,3 +1,3 @@
-import {RootState} from "../../../store.ts";
+import { RootState } from '../../../store';
 
 export const getTodos = (state: RootState) => state.todos.todos;

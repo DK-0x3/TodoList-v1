@@ -10,7 +10,14 @@ class TodoApi {
 
 	// Функция для добавления todo
 	public addTodo = async (todo: Partial<ITodo>): Promise<ITodo> => {
-		const response = await axios.post('http://localhost:4000/api/todos', todo);
+		const response = await axios.post<ITodo>('http://localhost:1941/api/todo',
+			{
+				title: todo.title,
+				description: todo.description,
+				priority: todo.priority,
+				dateCompleted: todo.dateCompleted,
+			}
+		);
 		return response.data;
 	};
 

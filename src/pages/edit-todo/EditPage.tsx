@@ -10,16 +10,14 @@ import DropDownMenu, { IDropDownMenuValue } from '../../shared/ui/drop-down-menu
 import Priority from '../../entities/models/Priority';
 import { DateUtils } from '../../shared/utils/Date';
 import { useCallback, useEffect, useState } from 'react';
-import { useAppDispatch } from '../../store/types/useAppDispatch';
 import ITodo from '../../entities/models/ITodo';
-import { Status } from '../../entities/models/TodoStatus';
 import toast from 'react-hot-toast';
-import { updateTodoAsync } from '../../store/services/todo-list/slice/updateTodoAsync';
+import { useUpdateTodoMutation } from '../../app/api/todoReactAPI';
 
 export const EditPage = () => {
-	const dispatch = useAppDispatch();
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
+	const [updateTodo] = useUpdateTodoMutation();
 
 	const todo = useSelector(getTodos).find(todo => todo.id === id);
 
@@ -52,7 +50,7 @@ export const EditPage = () => {
 			title,
 			description,
 		};
-		dispatch(updateTodoAsync(newTodo));
+		updateTodo(newTodo);
 		toast('Сохранено!', {
 			icon: '✔',
 			duration: 1000,
@@ -110,7 +108,7 @@ export const EditPage = () => {
 				...todo,
 				dateCompleted: DateUtils.formatToUTC(newDate),
 			};
-			dispatch(updateTodoAsync(newTodo));
+			updateTodo(newTodo);
 		} else {
 			console.warn('Невалидная дата');
 		}
@@ -121,7 +119,7 @@ export const EditPage = () => {
 			...todo,
 			priority: priority,
 		};
-		dispatch(updateTodoAsync(newTodo));
+		updateTodo(newTodo);
 	};
 	
 	const handleDelete = () => {
@@ -129,16 +127,16 @@ export const EditPage = () => {
 			...todo,
 			isDeleted: true,
 		};
-		dispatch(updateTodoAsync(newTodo));
+		updateTodo(newTodo);
 		navigate(ROUTES.HOME);
 	};
 
 	const handleCompleted = () => {
 		const newTodo: ITodo = {
 			...todo,
-			status: Status.COMPLETED,
+			isDone: true,
 		};
-		dispatch(updateTodoAsync(newTodo));
+		updateTodo(newTodo);
 		navigate(ROUTES.HOME);
 	};
 

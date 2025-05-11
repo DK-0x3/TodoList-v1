@@ -1,5 +1,4 @@
 import styles from './CreatePage.module.scss';
-import { useAppDispatch } from '../../store/types/useAppDispatch';
 import { useNavigate } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import { DateUtils } from '../../shared/utils/Date';
@@ -8,22 +7,21 @@ import ITodo from '../../entities/models/ITodo';
 import toast from 'react-hot-toast';
 import Priority from '../../entities/models/Priority';
 import DropDownMenu, { IDropDownMenuValue } from '../../shared/ui/drop-down-menu/DropDownMenu';
-import { Status } from '../../entities/models/TodoStatus';
 import { InputApp } from '../../shared/ui/input/InputApp';
 import TimeSvg from '../../shared/assets/svg/time.svg';
 import Button from '../../shared/ui/button/Button';
-import { addTodoAsync } from '../../store/services/todo-list/slice/addTodoAsync';
+import { useAddTodoMutation } from '../../app/api/todoReactAPI';
 
 const CreatePage = () => {
-	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
+	const [addTodo] = useAddTodoMutation();
 
 	const todo: ITodo = {
 		id: '',
 		title: '',
 		description: '',
 		priority: Priority.LOW,
-		status: Status.NOT_COMPLETED,
+		isDone: false,
 		dateCompleted: new Date().toISOString(),
 		isDeleted: false,
 	};
@@ -71,7 +69,7 @@ const CreatePage = () => {
 			title,
 			description,
 		};
-		dispatch(addTodoAsync(newTodo));
+		addTodo(newTodo);
 		toast('Сохранено!', {
 			icon: '✔',
 			duration: 1000,
@@ -141,7 +139,7 @@ const CreatePage = () => {
 	const handleCompleted = () => {
 		setCurrentTodo(prevTodo => ({
 			...prevTodo,
-			status: Status.COMPLETED,
+			isDone: true,
 		}));
 		navigate(ROUTES.HOME);
 	};

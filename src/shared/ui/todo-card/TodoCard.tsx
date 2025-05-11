@@ -4,9 +4,6 @@ import TimeSvg from '../../assets/svg/time.svg';
 import ITodo from '../../../entities/models/ITodo';
 import { DateUtils } from '../../utils/Date';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch } from '../../../store/types/useAppDispatch';
-import { Status } from '../../../entities/models/TodoStatus';
-import { updateTodoAsync } from '../../../store/services/todo-list/slice/updateTodoAsync';
 import { PriorityUtils } from '../../utils/Priority';
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -14,6 +11,7 @@ import LowIcon from '../../assets/svg/lowSuccess.svg';
 import MediumIcon from '../../assets/svg/mediumSuccess.svg';
 import HighIcon from '../../assets/svg/highSuccess.svg';
 import Priority from '../../../entities/models/Priority';
+import { useUpdateTodoMutation } from '../../../app/api/todoReactAPI';
 
 export enum TodoCardStatus {
 	DEFAULT = 'DEFAULT',
@@ -32,8 +30,8 @@ const TodoCard = (props: ITodoCardProps) => {
 		status,
 	} = props;
 	const navigate = useNavigate();
-	const dispatch = useAppDispatch();
 	const [isEnter, setIsEnter] = useState(false);
+	const [updateTodo] = useUpdateTodoMutation();
 
 	const handleEditTodo = () => {
 		navigate(`edit/${todo.id}`);
@@ -46,9 +44,9 @@ const TodoCard = (props: ITodoCardProps) => {
 		if (result) {
 			const newTodo: ITodo = {
 				...todo,
-				status: Status.COMPLETED,
+				isDone: true,
 			};
-			dispatch(updateTodoAsync(newTodo));
+			updateTodo(newTodo);
 		} else {
 			// Cancel
 		}
@@ -63,7 +61,7 @@ const TodoCard = (props: ITodoCardProps) => {
 				...todo,
 				isDeleted: true,
 			};
-			dispatch(updateTodoAsync(newTodo));
+			updateTodo(newTodo);
 		} else {
 			// Cancel
 		}

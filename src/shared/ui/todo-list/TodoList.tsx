@@ -1,30 +1,28 @@
 import styles from './TodoList.module.scss';
 import ITodo from '../../../entities/models/ITodo';
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import TodoCard, { TodoCardStatus } from '../todo-card/TodoCard';
 import { DateUtils } from '../../utils/Date';
 import { parseISO, startOfDay } from 'date-fns';
-import { useAppDispatch } from '../../../store/types/useAppDispatch';
-import { updateTodo } from '../../../store/services/todo-list/slice/todoListSlice';
-import { Status } from '../../../entities/models/TodoStatus';
+import { useUpdateTodoMutation } from '../../../app/api/todoReactAPI';
 
 export interface ITodoListProps {
-    todos: ITodo[];
+	todos: ITodo[];
 	sorted: string;
 	search: string | null;
 }
 
 const TodoList: FC<ITodoListProps> = ({ todos, sorted, search }) => {
-	const dispatch = useAppDispatch();
+	const [updateTodo] = useUpdateTodoMutation();
 
 	const today = startOfDay(new Date());
+	const updatedTodoIds = useRef<Set<string>>(new Set());
 	useEffect(() => {
 		todos.forEach((todo) => {
-			if (todo.isDeleted) return;
-			if (todo.status === Status.COMPLETED) return;
+			if (todo.isDeleted || todo.isDone) return;
+			if (updatedTodoIds.current.has(todo.id)) return;
 
-			let date = parseISO(todo.dateCompleted);
-
+			const date = parseISO(todo.dateCompleted);
 			if (date < today) {
 				const todayUtc = new Date(Date.UTC(
 					today.getFullYear(),
@@ -36,10 +34,11 @@ const TodoList: FC<ITodoListProps> = ({ todos, sorted, search }) => {
 					dateCompleted: todayUtc.toISOString(),
 				};
 
-				dispatch(updateTodo(newTodo));
+				updateTodo(newTodo);
+				updatedTodoIds.current.add(todo.id);
 			}
 		});
-	}, [todos, dispatch, today]);
+	}, [todos, today]);
 
 	let searchTodos: ITodo[] = todos;
 
@@ -51,7 +50,7 @@ const TodoList: FC<ITodoListProps> = ({ todos, sorted, search }) => {
 	}
 
 	let groupedTodos: Record<string, ITodo[]>;
-	
+
 	switch (sorted) {
 	case 'date': {
 		groupedTodos = DateUtils.groupTodosByDate(searchTodos);
@@ -75,9 +74,9 @@ const TodoList: FC<ITodoListProps> = ({ todos, sorted, search }) => {
 						<h2 className={styles.TodoListGroupDate}>{groupDate}</h2>
 						{groupTodos.map((todo) => (
 							<TodoCard status={
-								(todo.status === Status.NOT_COMPLETED && !todo.isDeleted)
+								(!todo.isDone && !todo.isDeleted)
 									? TodoCardStatus.DEFAULT
-									: (todo.status === Status.COMPLETED
+									: (todo.isDone
 										? TodoCardStatus.COMPLETED
 										: TodoCardStatus.DELETED)
 							} key={todo.id} todo={todo} />
