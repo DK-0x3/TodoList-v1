@@ -11,7 +11,7 @@ import LowIcon from '../../assets/svg/lowSuccess.svg';
 import MediumIcon from '../../assets/svg/mediumSuccess.svg';
 import HighIcon from '../../assets/svg/highSuccess.svg';
 import Priority from '../../../entities/models/Priority';
-import { useUpdateTodoMutation } from '../../../app/api/todoReactAPI';
+import { useDeleteTodoMutation, useUpdateTodoMutation } from '../../../app/api/todoReactAPI';
 
 export enum TodoCardStatus {
 	DEFAULT = 'DEFAULT',
@@ -32,6 +32,7 @@ const TodoCard = (props: ITodoCardProps) => {
 	const navigate = useNavigate();
 	const [isEnter, setIsEnter] = useState(false);
 	const [updateTodo] = useUpdateTodoMutation();
+	const [deleteTodo] = useDeleteTodoMutation();
 
 	const handleEditTodo = () => {
 		navigate(`edit/${todo.id}`);
@@ -57,11 +58,7 @@ const TodoCard = (props: ITodoCardProps) => {
 
 		const result = confirm(`Вы уверены, что хотите Удалить задачу? \n\n${todo.title}`);
 		if (result) {
-			const newTodo: ITodo = {
-				...todo,
-				isDeleted: true,
-			};
-			updateTodo(newTodo);
+			deleteTodo(todo.id);
 		} else {
 			// Cancel
 		}

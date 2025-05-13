@@ -19,7 +19,7 @@ const TodoList: FC<ITodoListProps> = ({ todos, sorted, search }) => {
 	const updatedTodoIds = useRef<Set<string>>(new Set());
 	useEffect(() => {
 		todos.forEach((todo) => {
-			if (todo.isDeleted || todo.isDone) return;
+			if (todo.isDone) return;
 			if (updatedTodoIds.current.has(todo.id)) return;
 
 			const date = parseISO(todo.dateCompleted);
@@ -74,7 +74,7 @@ const TodoList: FC<ITodoListProps> = ({ todos, sorted, search }) => {
 						<h2 className={styles.TodoListGroupDate}>{groupDate}</h2>
 						{groupTodos.map((todo) => (
 							<TodoCard status={
-								(!todo.isDone && !todo.isDeleted)
+								(!todo.isDone)
 									? TodoCardStatus.DEFAULT
 									: (todo.isDone
 										? TodoCardStatus.COMPLETED

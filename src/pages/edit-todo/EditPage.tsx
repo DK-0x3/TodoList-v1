@@ -12,12 +12,13 @@ import { DateUtils } from '../../shared/utils/Date';
 import { useCallback, useEffect, useState } from 'react';
 import ITodo from '../../entities/models/ITodo';
 import toast from 'react-hot-toast';
-import { useUpdateTodoMutation } from '../../app/api/todoReactAPI';
+import {useDeleteTodoMutation, useUpdateTodoMutation} from '../../app/api/todoReactAPI';
 
 export const EditPage = () => {
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 	const [updateTodo] = useUpdateTodoMutation();
+	const [deleteTodo] = useDeleteTodoMutation();
 
 	const todo = useSelector(getTodos).find(todo => todo.id === id);
 
@@ -123,11 +124,7 @@ export const EditPage = () => {
 	};
 	
 	const handleDelete = () => {
-		const newTodo: ITodo = {
-			...todo,
-			isDeleted: true,
-		};
-		updateTodo(newTodo);
+		deleteTodo(todo.id);
 		navigate(ROUTES.HOME);
 	};
 

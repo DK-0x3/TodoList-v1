@@ -45,8 +45,6 @@ class DateUtil {
 		};
 
 		todos.forEach((todo) => {
-			if (todo.isDeleted) return;
-
 			if (todo.priority === Priority.LOW) {
 				groups['Низкий приоритет'].push(todo);
 			} else if (todo.priority === Priority.MEDIUM) {

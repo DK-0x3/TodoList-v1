@@ -3,6 +3,7 @@ import ITodo from '../../entities/models/ITodo';
 import {
 	updateTodo as updateTodoInSlice,
 	addTodos as addTodosInSlice,
+	removeTodo as removeTodoFromSlice,
 } from '../../store/services/todo-list/slice/todoListSlice';
 import Priority from '../../entities/models/Priority';
 
@@ -22,7 +23,7 @@ export const TodoReactAPI = createApi({
 	tagTypes: ['Todos'],
 	endpoints: builder => ({
 		fetchTodos: builder.query<ITodo[], void>({
-			query: () => 'todos',
+			query: () => 'todo',
 
 			// Тип данных, который возвращает сервер
 			transformResponse: (response: IResponseTodo[]): ITodo[] => {
@@ -73,7 +74,6 @@ export const TodoReactAPI = createApi({
 					priority: todo.priority,
 					dateCompleted: todo.dateCompleted,
 					done: todo.isDone,
-					isDeleted: todo.isDeleted,
 				},
 			}),
 			invalidatesTags: ['Todos'],
@@ -81,13 +81,30 @@ export const TodoReactAPI = createApi({
 			async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
 				try {
 					const { data } = await queryFulfilled;
-					console.log(data);
 					dispatch(updateTodoInSlice(data));
 				} catch (err) {
 					console.error('Ошибка при обновлении todo:', err);
 				}
 			},
 		}),
+
+		deleteTodo: builder.mutation<{ success: boolean; id: string }, string>({
+			query: (id) => ({
+				url: `todo/${id}`,
+				method: 'DELETE',
+			}),
+			invalidatesTags: ['Todos'],
+
+			async onQueryStarted(id, { dispatch, queryFulfilled }) {
+				try {
+					await queryFulfilled;
+					dispatch(removeTodoFromSlice(id));
+				} catch (err) {
+					console.error('Ошибка при удалении todo:', err);
+				}
+			},
+		})
+
 	}),
 });
 
@@ -95,4 +112,5 @@ export const {
 	useFetchTodosQuery,
 	useAddTodoMutation,
 	useUpdateTodoMutation,
+	useDeleteTodoMutation,
 } = TodoReactAPI;

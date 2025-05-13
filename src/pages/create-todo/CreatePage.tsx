@@ -23,7 +23,6 @@ const CreatePage = () => {
 		priority: Priority.LOW,
 		isDone: false,
 		dateCompleted: new Date().toISOString(),
-		isDeleted: false,
 	};
 	const [currentTodo, setCurrentTodo] = useState<ITodo>(todo);
 

@@ -15,7 +15,7 @@ const ArchivePage = () => {
 	}
 
 	let todos = useSelector(getTodos);
-	todos = todos.filter(todo => todo.isDone || todo.isDeleted);
+	todos = todos.filter(todo => todo.isDone);
 
 	const [searchTerm, setSearchTerm] = useState('');
 	const navigate = useNavigate();

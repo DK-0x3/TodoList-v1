@@ -7,7 +7,6 @@ interface ITodo {
     priority: Priority;
     isDone: boolean;
     dateCompleted: string;
-    isDeleted: boolean;
 }
 
 export default ITodo;
