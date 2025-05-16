@@ -135,14 +135,6 @@ const CreatePage = () => {
 		}));
 	};
 
-	const handleCompleted = () => {
-		setCurrentTodo(prevTodo => ({
-			...prevTodo,
-			isDone: true,
-		}));
-		navigate(ROUTES.HOME);
-	};
-
 	return (
 		<div className={styles.CreateTodo}>
 			<InputApp
@@ -172,9 +164,6 @@ const CreatePage = () => {
 				</div>
 
 				<div className={styles.ActionButtons}>
-					<Button onClick={handleCompleted} size='medium' className={styles.CompletedButton}>
-						Выполнить
-					</Button>
 					<Button onClick={handleSave} size='medium' className={styles.SaveButton}>
 						Сохранить
 					</Button>

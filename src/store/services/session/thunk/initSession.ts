@@ -33,7 +33,7 @@ export const initSession = (): AppThunk => (dispatch) => {
 
 			if (data.sessionId) {
 				console.log('найдена валидная сессия в cookie', data);
-				const updatedSession = { ...data, lastActivity: now };
+				const updatedSession = { ...data };
 				dispatch(setSessionData(updatedSession));
 				setCookie(COOKIE_KEY, JSON.stringify(updatedSession));
 				return;
@@ -47,7 +47,6 @@ export const initSession = (): AppThunk => (dispatch) => {
 	// Если сессия не найдена — создаём новую
 	const newSession: ISessionState = {
 		sessionId: `session-${now}`,
-		lastActivity: now,
 	};
 
 	dispatch(setSessionData(newSession));
