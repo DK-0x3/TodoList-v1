@@ -1,7 +1,7 @@
 import Priority from './Priority';
 
 interface ITodo {
-    id: string;
+    id: number;
     title: string;
     description: string;
     priority: Priority;

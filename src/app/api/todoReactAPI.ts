@@ -9,7 +9,7 @@ import Priority from '../../entities/models/Priority';
 
 export interface IResponseTodo {
 	message: {
-		id: string;
+		id: number;
 		title: string;
 		description: string;
 		priority: Priority;
@@ -32,7 +32,6 @@ export const TodoReactAPI = createApi({
 			query: () => 'todo',
 
 			transformResponse: (response: IResponseTodo): ITodo[] => {
-				console.log(response);
 				return response.message.map(todo => ({
 					id: todo.id,
 					title: todo.title,
@@ -70,7 +69,7 @@ export const TodoReactAPI = createApi({
 			},
 		}),
 
-		updateTodo: builder.mutation<ITodo, Partial<ITodo>>({
+		updateTodo: builder.mutation<null, Partial<ITodo>>({
 			query: (todo) => ({
 				url: `todo/${todo.id}`,
 				method: 'PUT',
@@ -84,17 +83,27 @@ export const TodoReactAPI = createApi({
 			}),
 			invalidatesTags: ['Todos'],
 
-			async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+			async onQueryStarted(arg, { dispatch, queryFulfilled }) {
 				try {
-					const { data } = await queryFulfilled;
-					dispatch(updateTodoInSlice(data));
+					await queryFulfilled;
+
+					const updatedTodo: ITodo = {
+						id: arg.id ?? Math.random(),
+						title: arg.title ?? '',
+						description: arg.description ?? '',
+						priority: arg.priority ?? Priority.LOW,
+						dateCompleted: arg.dateCompleted ?? '',
+						isDone: arg.isDone ?? false,
+					};
+
+					dispatch(updateTodoInSlice(updatedTodo));
 				} catch (err) {
 					console.error('Ошибка при обновлении todo:', err);
 				}
 			},
 		}),
 
-		deleteTodo: builder.mutation<{ success: boolean; id: string }, string>({
+		deleteTodo: builder.mutation<{ success: boolean; id: number }, number>({
 			query: (id) => ({
 				url: `todo/${id}`,
 				method: 'DELETE',

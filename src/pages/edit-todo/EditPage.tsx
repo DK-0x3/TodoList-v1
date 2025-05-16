@@ -12,7 +12,7 @@ import { DateUtils } from '../../shared/utils/Date';
 import { useCallback, useEffect, useState } from 'react';
 import ITodo from '../../entities/models/ITodo';
 import toast from 'react-hot-toast';
-import {useDeleteTodoMutation, useUpdateTodoMutation} from '../../app/api/todoReactAPI';
+import { useDeleteTodoMutation, useUpdateTodoMutation } from '../../app/api/todoReactAPI';
 
 export const EditPage = () => {
 	const { id } = useParams<{ id: string }>();
@@ -20,13 +20,15 @@ export const EditPage = () => {
 	const [updateTodo] = useUpdateTodoMutation();
 	const [deleteTodo] = useDeleteTodoMutation();
 
-	const todo = useSelector(getTodos).find(todo => todo.id === id);
+	console.log(useSelector(getTodos), id);
+	const todo = useSelector(getTodos).find(todo => todo.id === Number(id));
 
 	// Все хуки вызываем без условий
 	const [dateRussian, setDateRussian] = useState<string>('');
 
 	// Обновляем дату, когда todo появится
 	useEffect(() => {
+		console.log(todo);
 		if (todo?.dateCompleted) {
 			setDateRussian(DateUtils.formatUTCToRussian(todo.dateCompleted));
 		}
