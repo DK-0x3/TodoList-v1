@@ -24,6 +24,7 @@ const App = () => {
 		const getTodos = async () => {
 			try {
 				if (isSuccess) {
+					console.log(data);
 					dispatch(addTodos(data));
 				}
 			} catch (err) {

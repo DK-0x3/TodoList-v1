@@ -48,18 +48,18 @@ const CreatePage = () => {
 			});
 			return;
 		}
-		if (description.trim() === '') {
-			toast('Ошибка, заполни заголовок!', {
-				icon: '✔',
-				duration: 1000,
-				style: {
-					borderRadius: '10px',
-					background: 'var(--background-color)',
-					color: '#ff0000',
-				},
-			});
-			return;
-		}
+		// if (description.trim() === '') {
+		// 	toast('Ошибка, заполни описание!', {
+		// 		icon: '✔',
+		// 		duration: 1000,
+		// 		style: {
+		// 			borderRadius: '10px',
+		// 			background: 'var(--background-color)',
+		// 			color: '#ff0000',
+		// 		},
+		// 	});
+		// 	return;
+		// }
         
 		if (!currentTodo) return;
 		const newTodo: ITodo = {

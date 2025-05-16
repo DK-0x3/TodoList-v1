@@ -8,40 +8,45 @@ import {
 import Priority from '../../entities/models/Priority';
 
 export interface IResponseTodo {
-	id: string;
-	title: string;
-	description: string;
-	priority: Priority;
-	done: boolean;
-	dateCompleted: string;
-	isDeleted: boolean;
+	message: {
+		id: string;
+		title: string;
+		description: string;
+		priority: Priority;
+		done: boolean;
+		dateCompleted: string;
+	}[];
+}
+
+export interface IResponseAddTodo {
+	message: ITodo,
+	status: string,
 }
 
 export const TodoReactAPI = createApi({
 	reducerPath: 'todoAPI',
-	baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:1941/api/' }),
+	baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:1941/api/', credentials: 'include' }),
 	tagTypes: ['Todos'],
 	endpoints: builder => ({
 		fetchTodos: builder.query<ITodo[], void>({
 			query: () => 'todo',
 
-			// Тип данных, который возвращает сервер
-			transformResponse: (response: IResponseTodo[]): ITodo[] => {
-				return response.map(todo => ({
+			transformResponse: (response: IResponseTodo): ITodo[] => {
+				console.log(response);
+				return response.message.map(todo => ({
 					id: todo.id,
 					title: todo.title,
 					description: todo.description,
 					priority: todo.priority,
 					dateCompleted: todo.dateCompleted,
 					isDone: todo.done,
-					isDeleted: todo.isDeleted,
 				}));
 			},
 
 			providesTags: ['Todos'],
 		}),
 
-		addTodo: builder.mutation<ITodo, Partial<ITodo>>({
+		addTodo: builder.mutation<IResponseAddTodo, ITodo>({
 			query: (todo) => ({
 				url: 'todo',
 				method: 'POST',
@@ -57,7 +62,8 @@ export const TodoReactAPI = createApi({
 			async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
 				try {
 					const { data } = await queryFulfilled;
-					dispatch(addTodosInSlice([data]));
+					console.log(data);
+					dispatch(addTodosInSlice([data.message]));
 				} catch (err) {
 					console.error('Ошибка при обновлении todo:', err);
 				}
