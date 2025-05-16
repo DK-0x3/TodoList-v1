@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/named
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ITodoListSlice } from '../types/ITodoListSlice';
 import ITodo from '../../../../entities/models/ITodo';
