@@ -5,7 +5,6 @@ import ITodo from '../../../../entities/models/ITodo';
 
 const initialState: ITodoListSlice = {
 	todos: [],
-	status: 'success',
 };
 
 const todoListSlice = createSlice({

@@ -1,3 +1,9 @@
 import { RootState } from '../../../store';
+import { createSelector } from '@reduxjs/toolkit';
 
-export const getActiveTodos = (state: RootState) => state.todos.todos.filter(todo => !todo.isDone);
+const getTodos = (state: RootState) => state.todos.todos;
+
+export const getActiveTodos = createSelector(
+	[getTodos],
+	(todos) => todos.filter(todo => !todo.isDone)
+);

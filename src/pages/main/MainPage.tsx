@@ -1,7 +1,7 @@
 import styles from './MainPage.module.scss';
 import TodoList from '../../shared/ui/todo-list/TodoList';
 import { useSelector } from 'react-redux';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { useState } from 'react';
 import { getActiveTodos } from '../../store/services/todo-list/selectors/getActiveTodos';
 
@@ -38,8 +38,23 @@ const MainPage = () => {
 					onChange={handleSearchChange}
 				/>
 				<div className={styles.MainPageSearchFilters}>
-					<Link className={styles.ButtonSorted} to='/date'>По дате</Link>
-					<Link className={styles.ButtonSorted} to='/priority'>По важности</Link>
+					<NavLink
+						className={({ isActive }) =>
+							`${styles.ButtonSorted} ${isActive ? styles.Active : ''}`
+						}
+						to="/date"
+					>
+						По дате
+					</NavLink>
+
+					<NavLink
+						className={({ isActive }) =>
+							`${styles.ButtonSorted} ${isActive ? styles.Active : ''}`
+						}
+						to="/priority"
+					>
+						По важности
+					</NavLink>
 				</div>
 			</header>
 			<div className={styles.MainPageTodos}>

@@ -1,4 +1,4 @@
-import { format, isThisWeek, isToday, isTomorrow, parseISO } from 'date-fns';
+import { format, isBefore, isThisWeek, isToday, isTomorrow, parseISO, startOfToday } from 'date-fns';
 import ITodo from '../../entities/models/ITodo';
 import { ru } from 'date-fns/locale';
 import Priority from '../../entities/models/Priority';
@@ -6,6 +6,7 @@ import Priority from '../../entities/models/Priority';
 class DateUtil {
 	public groupTodosByDate = (todos: ITodo[]): Record<string, ITodo[]> => {
 		const groups: Record<string, ITodo[]> = {
+			'Просрочено': [],
 			'Сегодня': [],
 			'Завтра': [],
 			'На этой неделе': [],
@@ -16,7 +17,9 @@ class DateUtil {
 			const date = parseISO(todo.dateCompleted);
 			let group = 'Позже';
 
-			if (isToday(date)) {
+			if (!todo.isDone && isBefore(date, startOfToday())) {
+				group = 'Просрочено';
+			} else if (isToday(date)) {
 				group = 'Сегодня';
 			} else if (isTomorrow(date)) {
 				group = 'Завтра';
@@ -39,13 +42,18 @@ class DateUtil {
 
 	public groupTodosByPriority = (todos: ITodo[]): Record<string, ITodo[]> => {
 		const groups: Record<string, ITodo[]> = {
+			'Просрочено': [],
 			'Низкий приоритет': [],
 			'Средний приоритет': [],
 			'Высокий приоритет': [],
 		};
 
 		todos.forEach((todo) => {
-			if (todo.priority === Priority.LOW) {
+			const date = parseISO(todo.dateCompleted);
+
+			if (!todo.isDone && isBefore(date, startOfToday())) {
+				groups['Просрочено'].push(todo);
+			} else if (todo.priority === Priority.LOW) {
 				groups['Низкий приоритет'].push(todo);
 			} else if (todo.priority === Priority.MEDIUM) {
 				groups['Средний приоритет'].push(todo);
@@ -64,9 +72,14 @@ class DateUtil {
 		return groups;
 	};
 
-	public formatUTCToRussian = (utcString: string): string => {
+	public formatDateUTCToRussian = (utcString: string): string => {
 		const date = parseISO(utcString);
 		return format(date, 'd MMMM yyyy', { locale: ru });
+	};
+
+	public formatDateTimeUTCToRussian = (utcString: string): string => {
+		const date = parseISO(utcString);
+		return format(date, 'd MMMM yyyy, HH:mm', { locale: ru });
 	};
 
 	public formatUTCToInputDate = (utcString: string): string => {

@@ -1,7 +1,7 @@
 import styles from './ArchivePage.module.scss';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { getTodos } from '../../store/services/todo-list/selectors/getTodoById';
+import { getTodos } from '../../store/services/todo-list/selectors/getTodos';
 import { useState } from 'react';
 import TodoList from '../../shared/ui/todo-list/TodoList';
 

@@ -1,5 +1,5 @@
 import styles from './EditPage.module.scss';
-import { getTodos } from '../../store/services/todo-list/selectors/getTodoById';
+import { getTodos } from '../../store/services/todo-list/selectors/getTodos';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import ROUTES from '../../app/routing/routes';
@@ -30,7 +30,7 @@ export const EditPage = () => {
 	useEffect(() => {
 		console.log(todo);
 		if (todo?.dateCompleted) {
-			setDateRussian(DateUtils.formatUTCToRussian(todo.dateCompleted));
+			setDateRussian(DateUtils.formatDateUTCToRussian(todo.dateCompleted));
 		}
 	}, [todo]);
 
@@ -106,7 +106,7 @@ export const EditPage = () => {
 	const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const newDate = e.target.value; // в формате 'YYYY-MM-DD'
 		if (!isNaN(Date.parse(newDate))) {
-			setDateRussian(DateUtils.formatUTCToRussian(newDate));
+			setDateRussian(DateUtils.formatDateUTCToRussian(newDate));
 			const newTodo: ITodo = {
 				...todo,
 				dateCompleted: DateUtils.formatToUTC(newDate),

@@ -1,17 +1,21 @@
 import styles from './TodoCard.module.scss';
-import DeleteSvg from '../../../shared/assets/svg/delete.svg';
-import TimeSvg from '../../assets/svg/time.svg';
-import ITodo from '../../../entities/models/ITodo';
-import { DateUtils } from '../../utils/Date';
+import DeleteSvg from '../../shared/assets/svg/delete.svg';
+import EditSvg from '../../shared/assets/svg/edit.svg';
+import AlertSvg from '../../shared/assets/svg/alert.svg';
+import TimeSvg from '../../shared/assets/svg/time.svg';
+import ITodo from '../../entities/models/ITodo';
+import { DateUtils } from '../../shared/utils/Date';
 import { useNavigate } from 'react-router-dom';
-import { PriorityUtils } from '../../utils/Priority';
-import { useState } from 'react';
+import { PriorityUtils } from '../../shared/utils/Priority';
+import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import LowIcon from '../../assets/svg/lowSuccess.svg';
-import MediumIcon from '../../assets/svg/mediumSuccess.svg';
-import HighIcon from '../../assets/svg/highSuccess.svg';
-import Priority from '../../../entities/models/Priority';
-import { useDeleteTodoMutation, useUpdateTodoMutation } from '../../../app/api/todoReactAPI';
+import LowIcon from '../../shared/assets/svg/lowSuccess.svg';
+import MediumIcon from '../../shared/assets/svg/mediumSuccess.svg';
+import HighIcon from '../../shared/assets/svg/highSuccess.svg';
+import Priority from '../../entities/models/Priority';
+import { useDeleteTodoMutation, useUpdateTodoMutation } from '../../app/api/todoReactAPI';
+import { useModal } from '../modal/ui/ModalContext';
+import { AlertModal } from '../alert-modal/AlertModal';
 
 export enum TodoCardStatus {
 	DEFAULT = 'DEFAULT',
@@ -33,9 +37,21 @@ const TodoCard = (props: ITodoCardProps) => {
 	const [isEnter, setIsEnter] = useState(false);
 	const [updateTodo] = useUpdateTodoMutation();
 	const [deleteTodo] = useDeleteTodoMutation();
+	const { openModal } = useModal();
 
-	const handleEditTodo = () => {
-		navigate(`edit/${todo.id}`);
+	const handleEditTodo = (ev: React.MouseEvent<HTMLDivElement>) => {
+		ev.stopPropagation();
+
+		if (ev.button === 0) {
+			navigate(`edit/${todo.id}`);
+		}
+	};
+
+	const handleAlertModal = (ev: React.MouseEvent<HTMLDivElement>) => {
+		ev.preventDefault();
+		ev.stopPropagation();
+
+		openModal(<AlertModal todo={todo} />);
 	};
 	
 	const handleCompleteTodo = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -118,9 +134,8 @@ const TodoCard = (props: ITodoCardProps) => {
 	return (
 		<div
 			className={styles.TodoCard}
-			onMouseEnter={handleMouseEnter}
+			onMouseMove={handleMouseEnter}
 			onMouseLeave={handleMouseLeave}
-			onClick={handleEditTodo}
 		>
 			<div className={styles.TodoCardMain}>
 				<div>
@@ -140,18 +155,56 @@ const TodoCard = (props: ITodoCardProps) => {
 									animate={{ opacity: 1 }}
 									exit={{ opacity: 0 }}
 									transition={{ duration: 0.3 }}
-									className={styles.TodoCardDelete}
 								>
 									<img
-										className={styles.TodoCardDelete}
-										src={DeleteSvg}
-										alt="deleteTodo"
-										onClick={handleDeleteTodo}/>
+										style={{ cursor: 'pointer' }}
+										src={AlertSvg}
+										alt="AlertTodo"
+										onClick={handleAlertModal}/>
 								</motion.div>
 							)}
 						</AnimatePresence>
 					)
 				}
+
+				{
+					status === TodoCardStatus.DEFAULT && (
+						<AnimatePresence>
+							{isEnter && (
+								<motion.div
+									initial={{ opacity: 0 }}
+									animate={{ opacity: 1 }}
+									exit={{ opacity: 0 }}
+									transition={{ duration: 0.3 }}
+								>
+									<img
+										style={{ cursor: 'pointer' }}
+										src={EditSvg}
+										alt="EditTodo"
+										onClick={handleEditTodo}/>
+								</motion.div>
+							)}
+						</AnimatePresence>
+					)
+				}
+
+				<AnimatePresence>
+					{isEnter && (
+						<motion.div
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							exit={{ opacity: 0 }}
+							transition={{ duration: 0.3 }}
+							className={styles.TodoCardDelete}
+						>
+							<img
+								className={styles.TodoCardDelete}
+								src={DeleteSvg}
+								alt="DeleteTodo"
+								onClick={handleDeleteTodo}/>
+						</motion.div>
+					)}
+				</AnimatePresence>
 			</div>
 
 			<div className={styles.TodoCardMainDescription}>
@@ -163,60 +216,9 @@ const TodoCard = (props: ITodoCardProps) => {
 			<div className={styles.TodoCardMainTime}>
 				<img src={TimeSvg}/>
 				<span>
-					{DateUtils.formatUTCToRussian(todo.dateCompleted)}
+					{DateUtils.formatDateUTCToRussian(todo.dateCompleted)}
 				</span>
 			</div>
-
-			{/*<div className={styles.TodoCardMain}>*/}
-			{/*	{status === TodoCardStatus.DEFAULT && (*/}
-			{/*		<Button onClick={handleCompleteTodo} size="small" className={styles.TodoCardMainButton}>*/}
-			{/*			Выполнить*/}
-			{/*		</Button>*/}
-			{/*	)}*/}
-
-			{/*	{status === TodoCardStatus.COMPLETED && (*/}
-			{/*		<div className={styles.TodoCardStatusCompleted}>*/}
-			{/*			Выполнено!*/}
-			{/*		</div>*/}
-			{/*	)}*/}
-
-			{/*	{status === TodoCardStatus.DELETED && (*/}
-			{/*		<div className={styles.TodoCardStatusDeleted}>*/}
-			{/*			Удалено*/}
-			{/*		</div>*/}
-			{/*	)}*/}
-
-			{/*	<span>*/}
-			{/*		{todo.title}*/}
-			{/*	</span>*/}
-			{/*	<div className={`${styles.TodoCardMainPriority} */}
-			{/*						${todo.priority === Priority.HIGH ? styles.high : ''}*/}
-			{/*						${todo.priority === Priority.MEDIUM ? styles.medium : ''}*/}
-			{/*						${todo.priority === Priority.LOW ? styles.low : ''}`}>*/}
-			{/*		{priorityToText[todo.priority]}*/}
-			{/*	</div>*/}
-			{/*	{status === TodoCardStatus.DEFAULT && (*/}
-			{/*		<Button>*/}
-			{/*			<img src={EditSvg} onClick={handleEditTodo} alt='editTodo'/>*/}
-			{/*		</Button>*/}
-			{/*	)}*/}
-			{/*	{status === TodoCardStatus.DEFAULT && (*/}
-			{/*		<Button onClick={handleDeleteTodo}>*/}
-			{/*			<img src={DeleteSvg} alt='deleteTodo'/>*/}
-			{/*		</Button>*/}
-			{/*	)}*/}
-			{/*</div>*/}
-
-			{/*<div className={styles.TodoCardMainDescription}>*/}
-			{/*	{todo.description}*/}
-			{/*</div>*/}
-
-			{/*<div className={styles.TodoCardMainTime}>*/}
-			{/*	<img src={TimeSvg}/>*/}
-			{/*	<span>*/}
-			{/*		{DateUtils.formatUTCToRussian(todo.dateCompleted)}*/}
-			{/*	</span>*/}
-			{/*</div>*/}
 		</div>
 	);
 };

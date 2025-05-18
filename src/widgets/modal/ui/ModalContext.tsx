@@ -1,38 +1,43 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
+interface IModalInstance {
+	id: string;
+	component: ReactNode;
+}
+
 interface IModalContextType {
-	isOpen: boolean;
-	openModal: (component: ReactNode) => void;
-	closeModal: () => void;
-	component: ReactNode | null;
+	modals: IModalInstance[];
+	openModal: (component: ReactNode) => string;
+	closeModal: (id: string) => void;
+	closeAllModals: () => void;
 }
 
 const ModalContext = createContext<IModalContextType | undefined>(undefined);
 
 export const ModalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-	const [isOpen, setIsOpen] = useState(false);
-	const [component, setComponent] = useState<ReactNode | null>(null);
+	const [modals, setModals] = useState<IModalInstance[]>([]);
 
-	const openModal = (component: ReactNode) => {
-		setComponent(component);
-		setIsOpen(true);
+	const openModal = (component: ReactNode): string => {
+		const id = crypto.randomUUID();
+		setModals((prev) => [...prev, { id, component }]);
+		return id;
 	};
 
-	const closeModal = () => {
-		setIsOpen(false);
-		setComponent(null);
+	const closeModal = (id: string) => {
+		setModals((prev) => prev.filter((modal) => modal.id !== id));
+	};
+
+	const closeAllModals = () => {
+		setModals([]);
 	};
 
 	return (
-		<ModalContext.Provider value={{ isOpen, openModal, closeModal, component }}>
+		<ModalContext.Provider value={{ modals, openModal, closeModal, closeAllModals }}>
 			{children}
 		</ModalContext.Provider>
 	);
 };
 
-/**
- * Хук для доступа к контексту модалки
- */
 export const useModal = (): IModalContextType => {
 	const context = useContext(ModalContext);
 	if (!context) {

@@ -12,12 +12,13 @@
 .TodoCardMain {
   display: grid;
   gap: 10px;
-  grid-template-columns: 30px 1fr 40px;
+  grid-template-columns: 30px 1fr 40px 40px 40px;
   font-size: 20px;
   font-weight: bold;
+  height: 30px;
 
   span {
-    justify-self: center;
+    justify-self: left;
   }
 }
 
@@ -51,6 +52,7 @@
 
 .TodoCardDelete {
   cursor: pointer;
+  grid-column: 5;
 }
 
 .TodoCardStatusCompleted {

@@ -3,7 +3,7 @@ import './styles/global.scss';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { ModalProvider } from '../widgets/modal/ui/ModalContext';
-import { Modal } from '../widgets/modal/ui/Modal';
+import { ModalManager } from '../widgets/modal/ui/Modal';
 import AppRouter from './routing/AppRouter';
 import { BrowserRouter } from 'react-router-dom';
 import { useEffect } from 'react';
@@ -24,7 +24,6 @@ const App = () => {
 		const getTodos = async () => {
 			try {
 				if (isSuccess) {
-					console.log(data);
 					dispatch(addTodos(data));
 				}
 			} catch (err) {
@@ -41,7 +40,7 @@ const App = () => {
 				<BrowserRouter>
 					<div className="App">
 						<AppRouter/>
-						<Modal/>
+						<ModalManager/>
 					</div>
 				</BrowserRouter>
 			</ModalProvider>

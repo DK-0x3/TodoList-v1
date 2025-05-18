@@ -17,7 +17,7 @@ const CreatePage = () => {
 	const [addTodo] = useAddTodoMutation();
 
 	const todo: ITodo = {
-		id: '',
+		id: 0,
 		title: '',
 		description: '',
 		priority: Priority.LOW,
@@ -48,18 +48,6 @@ const CreatePage = () => {
 			});
 			return;
 		}
-		// if (description.trim() === '') {
-		// 	toast('Ошибка, заполни описание!', {
-		// 		icon: '✔',
-		// 		duration: 1000,
-		// 		style: {
-		// 			borderRadius: '10px',
-		// 			background: 'var(--background-color)',
-		// 			color: '#ff0000',
-		// 		},
-		// 	});
-		// 	return;
-		// }
         
 		if (!currentTodo) return;
 		const newTodo: ITodo = {
@@ -141,11 +129,13 @@ const CreatePage = () => {
 				className={styles.CreateTodoTitle}
 				value={currentTodo.title}
 				onChange={(text) => setTitle(text)}
+				placeholder='Название'
 			/>
 			<InputApp
 				className={styles.CreateTodoDescription}
 				value={currentTodo.description}
 				onChange={(text) => setDescription(text)}
+				placeholder='Описание'
 			/>
 
 			<div className={styles.CreateTodoProperties}>
@@ -153,7 +143,7 @@ const CreatePage = () => {
 					<img style={{ justifySelf: 'right', alignSelf: 'center' }} src={TimeSvg}/>
 					<div className={styles.Title}>
 						<span style={{ fontSize: '20px', fontWeight: 'bold' }}>
-							{DateUtils.formatUTCToRussian(date)}
+							{DateUtils.formatDateUTCToRussian(date)}
 						</span>
 						<input
 							type='date'
