@@ -21,9 +21,10 @@ export const InputApp: FC<IInputAppProps> = (props) => {
 	const [text, setText] = useState(value);
 
 	const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-		setText(e.target.value);
+		const newValue = e.target.value;
+		setText(newValue);
 		if (onChange) {
-			onChange(text);
+			onChange(newValue);
 		}
 	};
 

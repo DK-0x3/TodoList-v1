@@ -20,7 +20,6 @@ export const EditPage = () => {
 	const [updateTodo] = useUpdateTodoMutation();
 	const [deleteTodo] = useDeleteTodoMutation();
 
-	console.log(useSelector(getTodos), id);
 	const todo = useSelector(getTodos).find(todo => todo.id === Number(id));
 
 	// Все хуки вызываем без условий
@@ -28,7 +27,6 @@ export const EditPage = () => {
 
 	// Обновляем дату, когда todo появится
 	useEffect(() => {
-		console.log(todo);
 		if (todo?.dateCompleted) {
 			setDateRussian(DateUtils.formatDateUTCToRussian(todo.dateCompleted));
 		}
@@ -48,6 +46,7 @@ export const EditPage = () => {
 	// --- сначала handleSave
 	const handleSave = () => {
 		if (!todo) return;
+		console.log(title);
 		const newTodo: ITodo = {
 			...todo,
 			title,
